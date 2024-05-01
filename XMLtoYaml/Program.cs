@@ -53,7 +53,11 @@ static string ConvertXmlToYaml(XDocument doc, string trialAllowance, string tria
     XElement root = doc.Element("manifest");
 
     string name = root.Element("name")?.Value;
-    bool setHidden = name.Contains("lite", StringComparison.OrdinalIgnoreCase) || name.Contains("trial", StringComparison.OrdinalIgnoreCase) || name.Contains("private", StringComparison.OrdinalIgnoreCase);
+    XElement hiddenElement = root.Element("hidden");
+
+    bool setHidden = name.Contains("lite", StringComparison.OrdinalIgnoreCase) ||
+                    name.Contains("trial", StringComparison.OrdinalIgnoreCase) ||
+                    (hiddenElement != null && string.Equals(hiddenElement.Value, "true", StringComparison.OrdinalIgnoreCase));
 
     yaml.AppendLine($"mainClass: {root.Element("main-class")?.Value}");
     yaml.AppendLine($"name: {name}");
