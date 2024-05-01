@@ -77,11 +77,15 @@ static string ConvertXmlToYaml(XDocument doc, string trialAllowance, string tria
         yaml.AppendLine($"  - {elem.Value}");
     }
 
-    yaml.Append("features:\n");
-    foreach (var elem in root.Element("features")?.Elements("feature") ?? Enumerable.Empty<XElement>())
+    var features = root.Element("features")?.Elements("feature").ToList();
+    if (features != null && features.Count > 0)
     {
-        yaml.AppendLine($"  - type: {elem.Value}");
-        yaml.AppendLine($"    mode: {elem.Attribute("mode")?.Value}");
+        yaml.Append("features:\n");
+        foreach (var feature in features)
+        {
+            yaml.AppendLine($"  - type: {feature.Value}");
+            yaml.AppendLine($"    mode: {feature.Attribute("mode")?.Value}");
+        }
     }
 
     yaml.Append("tags:\n");
