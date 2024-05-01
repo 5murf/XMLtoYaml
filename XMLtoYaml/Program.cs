@@ -59,6 +59,9 @@ static string ConvertXmlToYaml(XDocument doc, string trialAllowance, string tria
                     name.Contains("trial", StringComparison.OrdinalIgnoreCase) ||
                     (hiddenElement != null && string.Equals(hiddenElement.Value, "true", StringComparison.OrdinalIgnoreCase));
 
+    string priceValue = root.Element("price")?.Value ?? "0.00";
+    double price = double.Parse(priceValue);
+
     yaml.AppendLine($"mainClass: {root.Element("main-class")?.Value}");
     yaml.AppendLine($"name: {name}");
     yaml.AppendLine($"internalId: {root.Element("internal-id")?.Value}");
@@ -108,9 +111,12 @@ static string ConvertXmlToYaml(XDocument doc, string trialAllowance, string tria
         yaml.AppendLine($"  - {tag.Value}");
     }
 
-    yaml.AppendLine("trial:");
-    yaml.AppendLine($"  allowance: {trialAllowance}");
-    yaml.AppendLine($"  window: {trialWindow}");
+    if (price > 0.00)
+    {
+        yaml.AppendLine("trial:");
+        yaml.AppendLine($"  allowance: {trialAllowance}");
+        yaml.AppendLine($"  window: {trialWindow}");
+    }
 
     var obfuscationElements = root.Element("obfuscation")?.Elements().ToList();
     if (obfuscationElements != null && obfuscationElements.Count > 0)
