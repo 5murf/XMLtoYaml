@@ -81,6 +81,16 @@ static string ConvertXmlToYaml(XDocument doc, string trialAllowance, string tria
         yaml.AppendLine($"  - {elem.Value}");
     }
 
+    var resources = root.Element("resources")?.Elements().ToList();
+    if (resources != null && resources.Count > 0)
+    {
+        yaml.Append("resources:\n");
+        foreach (var resource in resources)
+        {
+            yaml.AppendLine($"  - {resource.Value}");
+        }
+    }
+
     var features = root.Element("features")?.Elements("feature").ToList();
     if (features != null && features.Count > 0)
     {
